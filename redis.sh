@@ -10,7 +10,7 @@ echo "sentinel down-after-milliseconds redis-cluster 5000" >> /etc/redis/sentine
 
 echo "sentinel failover-timeout redis-cluster 10000" >> /etc/redis/sentinel.conf
 
-sed -i 's/daemonize no/daemonize yes/g' >> /etc/redis/sentinel.conf
+sed -i 's/daemonize no/daemonize yes/g'  /etc/redis/sentinel.conf
 
 echo "pidfile /var/run/redis/sentinel.pid" >> /etc/redis/sentinel.conf
 
