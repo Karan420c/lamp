@@ -4,9 +4,7 @@ echo  "bind 127.0.0.1 ::" >> /etc/redis/sentinel.conf
 
 echo "port 16379" >> /etc/redis/sentinel.conf
 
-read ipaddress
-
-echo "sentinel monitor redis-cluster $ipaddress 6379 2" >> /etc/redis/sentinel.conf
+echo "sentinel monitor redis-cluster 172.17.0.2 6379 2" >> /etc/redis/sentinel.conf
 
 echo "sentinel down-after-milliseconds redis-cluster 5000" >> /etc/redis/sentinel.conf
 
