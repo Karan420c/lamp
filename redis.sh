@@ -1,22 +1,3 @@
-#!/bin/bash
-
-#echo  "bind 127.0.0.1 ::" >> /etc/redis/sentinel.conf
-
-#echo "port 16379" >> /etc/redis/sentinel.conf
-
-#echo "sentinel monitor redis-cluster 172.17.0.2 6379 2" >> /etc/redis/sentinel.conf
-
-#echo "sentinel down-after-milliseconds redis-cluster 5000" >> /etc/redis/sentinel.conf
-
-#echo "sentinel failover-timeout redis-cluster 10000" >> /etc/redis/sentinel.conf
-
-#sed -i 's/daemonize no/daemonize yes/g' >> /etc/redis/sentinel.conf
-
-#echo "pidfile /var/run/redis/sentinel.pid" >> /etc/redis/sentinel.conf
-
-#echo "dir /var/redis"
-
-
 touch /etc/systemd/system/redis.service
 
 tee /etc/systemd/system/redis.service << EOF
@@ -42,7 +23,6 @@ EOF
 
  systemctl enable redis.service
 
-
 touch /etc/systemd/system/sentinel.service
 
 tee /etc/systemd/system/sentinel.service << EOF
@@ -61,8 +41,30 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 
-
 EOF
 
-#systemctl start sentinel.service
-#systemctl enable sentinel.service
+sed -i  's/daemonize no/daemonize yes/g' /etc/redis/sentinel.conf
+
+sed -i  's/port 26379/port 16379/g'  /etc/redis/sentinel.conf
+
+sed -i  's/sentinel monitor mymaster 127.0.0.1 6379 2/sentinel monitor redis-cluster 172.17.0.2 6379 2/g' /etc/redis/sentinel.conf
+
+sed -i  's/sentinel down-after-milliseconds mymaster 30000/sentinel down-after-milliseconds redis-cluster 5000/g' /etc/redis/sentinel.conf
+
+sed -i  's/sentinel parallel-syncs mymaster 1/sentinel parallel-syncs redis-cluster 1/g' /etc/redis/sentinel.conf
+
+sed -i  's/sentinel failover-timeout mymaster 180000/sentinel failover-timeout redis-cluster 10000/g' /etc/redis/sentinel.conf
+
+sed -i  's/pidfile /var/run/redis-sentinel.pid/pidfile "/var/run/redis/sentinel.pid"/g' /etc/redis/sentinel.conf
+
+sed -i 's/logfile ""/#logfile ""/g' /etc/redis/sentinel.conf
+
+echo "logfile /var/log/redis/sentinel.log" >> /etc/redis/sentinel.conf
+
+
+echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
+
+echo "net.core.somaxconn=65535" >>  /etc/sysctl.conf
+
+systemctl start sentinel.service
+systemctl enable sentinel.service
