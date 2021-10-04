@@ -3,7 +3,7 @@ touch /etc/systemd/system/redis.service
 tee /etc/systemd/system/redis.service << EOF
 
 [Unit]
-Description=Redis 
+Description=Redis
 After=network.target
 
 [Service]
@@ -33,7 +33,7 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/redis/sentinel.pid
+PIDFile=/var/run/redis-sentinel.pid/
 ExecStart=/usr/local/bin/redis-server /etc/redis/sentinel.conf --sentinel
 ExecStop=/bin/kill -s TERM $MAINPID
 Restart=always
@@ -55,7 +55,6 @@ sed -i  's/sentinel parallel-syncs mymaster 1/sentinel parallel-syncs redis-clus
 
 sed -i  's/sentinel failover-timeout mymaster 180000/sentinel failover-timeout redis-cluster 10000/g' /etc/redis/sentinel.conf
 
-sed -i  's/pidfile /var/run/redis-sentinel.pid/pidfile "/var/run/redis/sentinel.pid"/g' /etc/redis/sentinel.conf
 
 sed -i 's/logfile ""/#logfile ""/g' /etc/redis/sentinel.conf
 
