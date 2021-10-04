@@ -19,6 +19,8 @@ WantedBy=multi-user.target
 
 EOF
 
+echo "slaveof 172.17.0.2 6379"  >>  /etc/redis/redis.conf
+ 
  systemctl start redis.service
 
  systemctl enable redis.service
